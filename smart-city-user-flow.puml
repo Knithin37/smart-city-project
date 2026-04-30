@@ -1,0 +1,85 @@
+@startuml smart_city_user_flow
+skinparam monochrome true
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor #lightblue
+  BorderColor #blue
+}
+title Smart City Dashboard - Complete User Workflow
+
+start
+
+:User opens website;
+
+if (Local token exists?) then (yes)
+  :Load Dashboard;
+else (no)
+  :Show Login page;
+  :User enters credentials
+  or selects Register;
+  
+  :Submit auth request;
+  if (Auth successful?) then (yes)
+    :Store token;
+    :Redirect to Dashboard;
+  else (no)
+    :Show error;
+    :Retry or back to home;
+    -> Retry;
+  endif
+endif
+
+:Dashboard loads
+with City Context;
+
+repeat
+  :User selects service
+  (Weather, AQI, Healthcare, Tourism);
+  
+  :Enter or select city name;
+  
+  :Trigger searchCity()
+  via CityContext;
+  
+  :Fetch parallel APIs:
+  - OpenWeather Weather
+  - OpenWeather AQI
+  - Google Places Healthcare
+  - Google Places Tourism;
+  
+  if (All data loaded?) then (yes)
+    :Display results in page;
+    if (Alerts triggered?) then (yes)
+      :Show dynamic alerts/tips;
+    endif
+    :Update CityContext;
+  else (no)
+    :Show error message;
+    :Offer retry with new city;
+  endif
+  
+  :User views notifications?
+  if (yes) then (yes)
+    :Load & display notifications;
+  endif
+  
+  :Generate report?
+  if (yes) then (yes)
+    :POST /api/reports;
+    :Save report;
+  endif
+  
+  :Update profile/settings?
+  if (yes) then (yes)
+    :PUT /api/profile;
+    :Save changes;
+  endif
+repeat while (Continue using?) is (yes)
+-> no;
+
+:User logs out;
+:Clear token;
+stop
+
+@enduml
+

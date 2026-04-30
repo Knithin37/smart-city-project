@@ -1,0 +1,49 @@
+@startuml content_writer_workflow
+skinparam monochrome true
+skinparam shadowing false
+skinparam activityBackgroundColor #E1F5FE
+skinparam activityBorderColor #0277BD
+title Content Writer/Author Workflow - General Mechanism
+
+start
+
+:Login to Content Platform;
+if (New content?) then (yes)
+  :Brainstorm topic/audience;
+  :Research keywords & trends;
+  :Create outline/structure;
+else (existing)
+  :Load draft/review feedback;
+endif
+
+repeat
+  :Write content section;
+  :Check readability/SEO;
+  :Add images/media;
+  :Preview format;
+repeat while (Content complete?) is (no)
+-> yes;
+
+:Proofread & edit;
+if (Self-review OK?) then (yes)
+else (no)
+  :Revise weak sections;
+  -> Proofread;
+endif
+
+:Submit for review;
+if (Approved?) then (yes)
+  :Schedule/publish;
+  :Promote on social/channels;
+else (no)
+  :Address feedback;
+  :Resubmit;
+endif
+
+:Monitor performance
+(views, engagement, comments);
+:Update based on analytics;
+stop
+
+@enduml
+
